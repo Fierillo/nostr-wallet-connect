@@ -1,6 +1,8 @@
 # Nostr Wallet Connect
 
-> ❗ We're working on a brand new version of NWC [here](https://github.com/getAlby/nostr-wallet-connect-next).
+## ❗ We're working on a brand new version of NWC: [Alby Hub](https://github.com/getAlby/hub).
+
+> ❗ this project is not actively maintained and we focus on the next version of it: Alby Hub.
 
 This application allows you to control your Lightning node or wallet over Nostr.
 Connect applications like [Damus](https://damus.io/) or [Amethyst](https://linktr.ee/amethyst.social) to your node.
