@@ -66,14 +66,27 @@ func (svc *Service) HandleGetBalanceEvent(ctx context.Context, request *Nip47Req
 		}, ss)
 	}
 
-	responsePayload := &Nip47BalanceResponse{
-		Balance: balance * MSAT_PER_SAT,
-	}
-
 	appPermission := AppPermission{}
 	svc.db.Where("app_id = ? AND request_method = ?", app.ID, NIP_47_PAY_INVOICE_METHOD).First(&appPermission)
 
 	maxAmount := appPermission.MaxAmount
+	availableBalance := balance
+
+	if maxAmount > 0 {
+		budgetUsage := svc.GetBudgetUsage(&appPermission)
+		remainingBudget := int64(maxAmount) - budgetUsage
+		if remainingBudget < availableBalance {
+			availableBalance = remainingBudget
+		}
+		if availableBalance < 0 {
+			availableBalance = 0
+		}
+	}
+
+	responsePayload := &Nip47BalanceResponse{
+		Balance: availableBalance * MSAT_PER_SAT,
+	}
+
 	if maxAmount > 0 {
 		responsePayload.MaxAmount = maxAmount * MSAT_PER_SAT
 		responsePayload.BudgetRenewal = appPermission.BudgetRenewal
